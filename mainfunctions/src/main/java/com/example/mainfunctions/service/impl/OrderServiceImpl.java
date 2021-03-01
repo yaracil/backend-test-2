@@ -2,6 +2,8 @@ package com.example.mainfunctions.service.impl;
 
 import com.example.mainfunctions.dto.OrderDto;
 import com.example.mainfunctions.model.GroceryOrder;
+import com.example.mainfunctions.model.Item;
+import com.example.mainfunctions.repositories.ItemRepository;
 import com.example.mainfunctions.repositories.OrderRepository;
 import com.example.mainfunctions.repositories.UserRepository;
 import com.example.mainfunctions.service.OrderService;
@@ -11,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -23,6 +27,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    ItemRepository itemRepository;
 
 
     @Override
@@ -38,7 +45,11 @@ public class OrderServiceImpl implements OrderService {
         groceryOrder.setFeedback(orderDto.getFeedback());
         groceryOrder.setNotes(orderDto.getNotes());
         groceryOrder.setRate(orderDto.getRate());
-        groceryOrder.setItems(Collections.emptyList());
+        List<Item> items = new ArrayList<>();
+        orderDto.getItems().forEach(idItem -> {
+            itemRepository.findById(idItem).ifPresent(items::add);
+        });
+        groceryOrder.setItems(items);
         groceryOrder.setUser(userRepository.findById(orderDto.getIdUser()).orElse(null));
         return orderRepository.save(groceryOrder);
     }
