@@ -1,17 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="CompilerConfiguration">
-    <annotationProcessing>
-      <profile name="Gradle Imported" enabled="true">
-        <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="false">
-          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-configuration-processor/2.3.10.BUILD-SNAPSHOT/178a4eedd7d8970cee34184dc96660fbe9110cd5/spring-boot-configuration-processor-2.3.10.BUILD-SNAPSHOT.jar" />
-          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.18/481f5bfed3ae29f656eedfe9e98c8365b8ba5c57/lombok-1.18.18.jar" />
-        </processorPath>
-        <module name="apigateway.main" />
-      </profile>
-    </annotationProcessing>
-  </component>
   <component name="TypeScriptCompiler">
     <option name="recompileOnChanges" value="true" />
     <option name="typeScriptCompilerParams" value="--sourceMap true" />

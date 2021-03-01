@@ -35,13 +35,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public GroceryOrder save(OrderDto orderDto) {
-        // Validar USERNAME repetido
-//        Order orderExist = orderRepository.findById(orderDto.getIdOrder()).orElse(null);
-//        LOG.info(orderExist);
-//        if (orderExist != null) {
-//            throw new MyAppException("msg.order.duplicated");
-//        }
-        GroceryOrder groceryOrder = new GroceryOrder();
+        GroceryOrder groceryOrder = orderDto.getIdOrder() == null ? new GroceryOrder() : orderRepository.findById(orderDto.getIdOrder()).orElse(new GroceryOrder());
         groceryOrder.setFeedback(orderDto.getFeedback());
         groceryOrder.setNotes(orderDto.getNotes());
         groceryOrder.setRate(orderDto.getRate());

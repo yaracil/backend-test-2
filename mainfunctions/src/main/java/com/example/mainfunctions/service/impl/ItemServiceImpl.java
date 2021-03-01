@@ -21,9 +21,10 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Item save(ItemDto itemDto) {
-        Item item = new Item();
+        Item item = itemDto.getIdItem() == null ? new Item() : itemRepository.findById(itemDto.getIdItem()).orElse(new Item());
         item.setName(itemDto.getName());
         item.setPrice(itemDto.getPrice());
-        return itemRepository.save(item);
+        itemRepository.save(item);
+        return item;
     }
 }

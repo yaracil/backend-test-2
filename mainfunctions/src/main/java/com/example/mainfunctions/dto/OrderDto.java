@@ -11,14 +11,9 @@ import java.util.List;
 public class OrderDto {
 
     private Integer idOrder;
-
     private Integer idUser;
-
     private String notes;
-
     private Integer rate;
-
     private String feedback;
-
     private List<Integer> items;
 }

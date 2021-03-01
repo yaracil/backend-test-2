@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -62,12 +61,16 @@ public class OrderController extends ResponseEntityExceptionHandler {
 
     @PatchMapping("/{idOrder}")
     @CrossOrigin
-    public GroceryOrder updateOrderById(@PathVariable Integer idOrder, @RequestBody OrderDto orderDto) {
+    public ResponseEntity<Object> updateOrderById(@PathVariable Integer idOrder, @RequestBody OrderDto orderDto) {
+        LOG.info("Editing order " + idOrder + " dto: " + orderDto.toString());
+        Map<String, Object> response = new HashMap<>();
         GroceryOrder groceryOrderFromDb = orderRepository.findById(idOrder).orElse(null);
         if (groceryOrderFromDb == null) {
             throw new MyAppException("msg.order.notexists");
         }
-        groceryOrderFromDb.setFeedback(orderDto.getFeedback());//...
-        return orderRepository.save(groceryOrderFromDb);
+        orderDto.setIdOrder(idOrder);
+        response.put("data", orderService.save(orderDto));
+        response.put("success", "true");
+        return ResponseEntity.ok(response);
     }
 }

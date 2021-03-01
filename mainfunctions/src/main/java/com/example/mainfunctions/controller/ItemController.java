@@ -52,22 +52,24 @@ public class ItemController extends ResponseEntityExceptionHandler {
     @PostMapping
     @ResponseBody
     @CrossOrigin
-    public ResponseEntity<Object> createItem(@RequestBody ItemDto ItemDto) {
+    public ResponseEntity<Object> createItem(@RequestBody ItemDto itemDto) {
         Map<String, Object> response = new HashMap<>();
-
-        response.put("data", itemService.save(ItemDto));
+        response.put("data", itemService.save(itemDto));
         response.put("success", "true");
         return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/{idItem}")
     @CrossOrigin
-    public Item updateItemById(@PathVariable Integer idItem, @RequestBody ItemDto ItemDto) {
-        Item ItemFromDb = itemRepository.findById(idItem).orElse(null);
-        if (ItemFromDb == null) {
-            throw new MyAppException("msg.Item.notexists");
-        }
-        ItemFromDb.setName(ItemDto.getName());//...
-        return itemRepository.save(ItemFromDb);
+    public ResponseEntity<Object> updateItemById(@PathVariable Integer idItem, @RequestBody ItemDto itemDto) {
+        LOG.info("Editing item " + idItem);
+        Map<String, Object> response = new HashMap<>();
+        Item itemFromDb = itemRepository.findById(idItem).orElse(null);
+        if (itemFromDb == null) {
+            throw new MyAppException("msg.item.notexists");
+        } else itemDto.setIdItem(idItem);
+        response.put("data", itemService.save(itemDto));
+        response.put("success", "true");
+        return ResponseEntity.ok(response);
     }
 }
