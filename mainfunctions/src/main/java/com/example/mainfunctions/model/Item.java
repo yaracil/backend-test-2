@@ -1,7 +1,9 @@
 package com.example.mainfunctions.model;
 
 import lombok.*;
+
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -11,25 +13,17 @@ import javax.persistence.*;
 @Entity
 @ToString
 @Table
-public class User {
+public class Item {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer idUser;
-
-    @Column(name = "email")
-    private String email;
+    private Integer idItem;
 
     @Column(name = "name")
     private String name;
 
-    @Column(name = "role")
-    private Integer role;
 
-    @Column(name = "lastName")
-    private String lastName;
-
-    @Column(name = "password")
-    private String password;
+    @Column(name = "price")
+    private String price;
 
 }

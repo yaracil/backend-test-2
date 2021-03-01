@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class UsersServiceImpl implements UsersService {
 
     static final Logger LOG = LogManager.getLogger(UsersServiceImpl.class);
-    final String SERVER_ADDRESS = "http://localhost:3000";
 
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -33,15 +32,14 @@ public class UsersServiceImpl implements UsersService {
         if (existsUser != null) {
             throw new MyAppException("msg.user.duplicated");
         }
-        
         User user = new User();
         user.setEmail(userDto.getEmail());
         user.setName(userDto.getName());
         user.setLastName(userDto.getLastName());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        userRepository.save(user);
+        user.setRole(userDto.getRole());
 
-        return user;
+        return userRepository.save(user);
     }
 
     @Override
@@ -50,9 +48,9 @@ public class UsersServiceImpl implements UsersService {
         //OBTENER EL USER POR EL HEADER
 
         User user = userRepository.findFirstByEmailIgnoreCase(email);
-        if (user == null ) throw new MyAppException("msg.user.email.error");
-            user.setPassword(passwordEncoder.encode(newPassword));
-            userRepository.save(user);
-            return true;
+        if (user == null) throw new MyAppException("msg.user.email.error");
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+        return true;
     }
 }
