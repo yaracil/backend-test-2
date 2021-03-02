@@ -3,12 +3,15 @@
 import React from "react";
 
 import SiteWrapper from "../SiteWrapper.react";
-import {Form, Button, Card, Grid, Icon, Page, Table, Text, FormTextInput, Alert, List} from "tabler-react";
+import {Form, Button, Card, Grid, Icon, Page, Table, Text, FormTextInput, Alert, List, Container} from "tabler-react";
 import {useFormik} from "formik";
 import {DEFAULT_REQUEST_ERROR} from "../util/Constants";
 import {AxiosResponse} from "axios";
 import ItemService from "../services/items.service";
 import OrdersService from "../services/orders.service";
+import TableContainer from "../components/TableContainer";
+import {useLocation} from "react-router-dom";
+import {useAuthContext} from "../contexts/AuthenticationContext";
 
 const validate = async (values: any) => {
     let errors: any = {};
@@ -49,21 +52,23 @@ type fieldTypes = {
 
 function Orders() {
 
+    const {user} = useAuthContext();
     const [alertState, setAlertState] = React.useState({visible: false, text: "", error: false});
-    const orderService = React.useMemo(() => new OrdersService(null), []);
+    const orderService = React.useMemo(() => new OrdersService(user.token), [user]);
     const [orders, setOrders] = React.useState([]);
 
     React.useEffect(() => {
         const fetchOrders = async () => {
             try {
-                const response = await orderService.getAll();
+                const response = user.role === 1 ? await orderService.getAll() : await orderService.getAllById(user.idUser);
                 setOrders(response.data);
+                console.log("orderssss "+JSON.stringify(response.data))
             } catch (error) {
                 setAlertState({visible: true, text: error.message, error: true});
             }
         }
         fetchOrders();
-    }, []);
+    }, [orderService]);
 
     const handleDelete = async (idOrder: number) => {
         try {
@@ -80,7 +85,7 @@ function Orders() {
             feedback: values.feedback,
             items: values.items.map((item_: any) => item_.idItem),
             idUser: values.idUser,
-            rate: values.rate,
+            rate: values.rate !== 0 ? values.rate : null,
             notes: values.notes
         };
         let errorMessage = DEFAULT_REQUEST_ERROR;
@@ -105,11 +110,9 @@ function Orders() {
                 setAlertState({visible: true, text: errorMessage, error: true});
             }
         }
-
-    }
+    };
 
     function prepareEdit(order: fieldTypes) {
-        console.log("lo que llega al setear values " + JSON.stringify(order));
         formik.setValues({
             idOrder: order.idOrder,
             notes: order.notes,
@@ -126,17 +129,19 @@ function Orders() {
             idOrder: null,
             notes: '',
             feedback: '',
-            rate: 0,
+            rate: null,
             items: [],
             isEditing: false,
-            idUser: null,
+            idUser: user.idUser,
         },
         validate: validate,
         onSubmit: (values, {setSubmitting, setValues, resetForm}) => {
+            window.scrollTo(0, 0);
             handleEdit(values, setValues).then(() => {
                 setSubmitting(false);
                 resetForm();
             })
+
         },
     });
 
@@ -184,31 +189,15 @@ function Orders() {
                                             value={formik.values.rate}
                                             onBlur={formik.handleBlur}
                                         >
-                                            {[1, 2, 3, 4, 5].map(option =>
+                                            {[0, 1, 2, 3, 4, 5].map(option =>
                                                 <option>
-                                                    {option}
+                                                    {option === 0 ? "Select a rate" : option}
                                                 </option>
                                             )}
                                         </Form.Select>
                                     </Form.Group>
                                 </div>
                             </div>
-                            {/*<Form.Group label="Select items">*/}
-                            {/*    <Form.SelectGroup*/}
-                            {/*        canSelectMultiple*/}
-                            {/*        pills*/}
-                            {/*    >*/}
-                            {/*        {*/}
-                            {/*            formik.values.items.map((item: any) =>*/}
-                            {/*                <Form.SelectGroupItem*/}
-                            {/*                    label={"Item: " + item.name + " - Price: $" + item.price}*/}
-                            {/*                    name="items"*/}
-                            {/*                    value={item.idItem}*/}
-                            {/*                />)*/}
-                            {/*        }*/}
-
-                            {/*    </Form.SelectGroup>*/}
-                            {/*</Form.Group>*/}
                             <Form.Group
                                 isRequired
                                 label={defaultStrings.feedbackLabel}
@@ -235,65 +224,11 @@ function Orders() {
                         </Form>
                     </Card.Body>
                 </Card> : null}
-                <Card title="List of orders">
-                    <Table
-                        responsive
-                        className="card-table table-vcenter text-nowrap"
-                        headerItems={[
-                            {content: "No.", className: "w-1"},
-                            {content: "Notes"},
-                            {content: "Feedback"},
-                            {content: "User"},
-                            {content: "Items"},
-                            {content: "Rate"},
-                            {content: null},
-                        ]}
-                        bodyItems={
-                            orders.map((order: fieldTypes) => {
-                                    return {
-                                        key: order.idOrder,
-                                        item: [
-                                            {
-                                                content: (
-                                                    <Text RootComponent="span" muted>
-                                                        {order.idOrder}
-                                                    </Text>
-                                                ),
-                                            },
-                                            {content: order.notes},
-                                            {content: order.feedback},
-                                            {content: order.user.name},
-                                            {
-                                                content: (
-                                                    <List>
-                                                        {order.items.map((item_: any) =>
-                                                            <List.Item>{item_.name}</List.Item>)}
-                                                    </List>
-                                                )
-                                            },
-                                            {content: order.rate},
-                                            {
-                                                alignContent: "right",
-                                                content: (
-                                                    <React.Fragment>
-                                                        <Button onClick={() => prepareEdit(order)} color="primary">
-                                                            <Icon name="edit"/>
-                                                        </Button>
-                                                        <Button onClick={() => handleDelete(order.idOrder)} className="ml-5"
-                                                                color="secondary">
-                                                            <Icon name="trash"/>
-                                                        </Button>
-                                                    </React.Fragment>
-                                                ),
-                                            }
-                                        ],
-                                    }
-                                },
-                            )
-                        }
-                    />
-                </Card>
             </Grid.Col>
+
+            <Container style={{marginTop: 100}}>
+                <TableContainer data={orders} prepareEdit={prepareEdit} handleDelete={handleDelete}/>
+            </Container>
         </Page.Content>
     </SiteWrapper>;
 }

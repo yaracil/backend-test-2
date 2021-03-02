@@ -30,16 +30,16 @@ function App() {
         <Route
             {...rest}
             render={(props: any) =>
-                // user.token ? (
+                user.token ? (
                 <Component {...props} />
-                // ) : (
-                //     <Redirect
-                //         to={{
-                //           pathname: "/login",
-                //           state: {from: props.location},
-                //         }}
-                //     />
-                // )
+                ) : (
+                    <Redirect
+                        to={{
+                          pathname: "/login",
+                          state: {from: props.location},
+                        }}
+                    />
+                )
             }
         />
     );

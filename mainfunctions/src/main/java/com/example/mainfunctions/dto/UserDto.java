@@ -19,14 +19,12 @@ public class UserDto {
     private Integer role;
     private String email;
     private String name;
-    private String lastName;
     private String password;
 
 
     public UserDto(User user) {
         if (user != null) {
             this.email = user.getEmail();
-            this.lastName = user.getLastName();
             this.name = user.getName();
             this.idUser = user.getIdUser();
             this.role = user.getRole();

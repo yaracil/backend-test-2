@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Setter
 @Entity
 @ToString
-@Table
+@Table(name = "user")
 public class User {
 
     @Id
@@ -25,9 +25,6 @@ public class User {
 
     @Column(name = "role")
     private Integer role;
-
-    @Column(name = "lastName")
-    private String lastName;
 
     @Column(name = "password")
     private String password;

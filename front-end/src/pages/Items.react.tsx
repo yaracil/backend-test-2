@@ -8,6 +8,8 @@ import {useFormik} from "formik";
 import {DEFAULT_REQUEST_ERROR} from "../util/Constants";
 import {AxiosResponse} from "axios";
 import ItemService from "../services/items.service";
+import OrdersService from "../services/orders.service";
+import {useAuthContext} from "../contexts/AuthenticationContext";
 
 const validate = async (values: any) => {
     let errors: any = {};
@@ -42,8 +44,9 @@ type fieldTypes = {
 
 function Items() {
 
+    const {user} = useAuthContext();
     const [alertState, setAlertState] = React.useState({visible: false, text: "", error: false});
-    const itemService = React.useMemo(() => new ItemService(null), []);
+    const itemService = React.useMemo(() => new ItemService(user.token), [user]);
     const [items, setItems] = React.useState([]);
 
     React.useEffect(() => {
@@ -132,7 +135,8 @@ function Items() {
             name: item.name,
             price: item.price,
             isEditing: true
-        })
+        });
+        window.scrollTo(0, 0);
     }
 
     const formik = useFormik({

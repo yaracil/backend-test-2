@@ -3,35 +3,33 @@ import {AxiosInstance} from "axios";
 
 class OrdersService {
     private http: AxiosInstance | null;
-    private httpOpen: AxiosInstance;
 
     constructor(token: string | null) {
         this.http = token ? ApiProtectedWS(token, "orders") : null;
-        this.httpOpen = ApiOpenWS("orders");
     }
 
     getAll() {
-        // return this.http?.get("/");
-        return this.httpOpen?.get("/");
+        return this.http?.get("/");
+    }
+
+    getAllById(idUser: number) {
+        return this.http?.get(`/find?idUser=${idUser}`);
     }
 
     get(id: number) {
-        // return this.http?.get(`/${id}`);
-        return this.httpOpen?.get(`/${id}`);
+        return this.http?.get(`/${id}`);
     }
 
     create(data: any) {
-        return this.httpOpen?.post("/", data);
+        return this.http?.post("/", data);
     }
 
     update(id: number, data: any) {
-        // return this.http?.put(`/${id}`, data);
-        return this.httpOpen?.patch(`/${id}`, data);
+        return this.http?.patch(`/${id}`, data);
     }
 
     delete(id: number) {
-        return this.httpOpen?.delete(`/${id}`);
-        // return this.http?.delete(`/${id}`);
+        return this.http?.delete(`/${id}`);
     }
 }
 

@@ -26,7 +26,6 @@ public class UsersServiceImpl implements UsersService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public User save(UserDto userDto) throws MyAppException {
-        // Validar USERNAME repetido
         User existsUser = userRepository.findFirstByEmailIgnoreCase(userDto.getEmail());
         LOG.info(existsUser);
         if (existsUser != null) {
@@ -35,9 +34,10 @@ public class UsersServiceImpl implements UsersService {
         User user = new User();
         user.setEmail(userDto.getEmail());
         user.setName(userDto.getName());
-        user.setLastName(userDto.getLastName());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        user.setRole(userDto.getRole());
+//        user.setRole(userDto.getRole());
+        //ALL NEW USERS ARE CLIENTS role=2 / role=1 ADMIN
+        user.setRole(2);
 
         return userRepository.save(user);
     }

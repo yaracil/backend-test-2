@@ -35,3 +35,12 @@ out/
 
 ### VS Code ###
 .vscode/
+
+mainfunctions/cache
+mainfunctions/build
+eureka/cache
+eureka/build
+apigateway/cache
+apigateway/build
+front-end/node_modules
+front-end/build

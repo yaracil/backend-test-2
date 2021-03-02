@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,6 +33,13 @@ public class OrderController extends ResponseEntityExceptionHandler {
     @CrossOrigin
     public Iterable<GroceryOrder> findAllOrders() {
         return orderRepository.findAll();
+    }
+
+    @GetMapping("/find")
+    @ResponseBody
+    @CrossOrigin
+    public Iterable<GroceryOrder> findAllByIdUser(@RequestParam("idUser") Integer idUser) {
+        return orderRepository.findAllByUserIdUser(idUser);
     }
 
     @GetMapping("/{idOrder}")

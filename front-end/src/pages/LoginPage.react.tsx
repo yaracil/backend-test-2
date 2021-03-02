@@ -1,11 +1,62 @@
 // @flow
 
 import * as React from "react";
-import { Formik } from "formik";
-import { LoginPage as TablerLoginPage } from "tabler-react";
+import {Formik} from "formik";
+import LoginCard from "../components/LoginCard"
+import UserService from "../services/user.service";
+import {useAuthContext} from "../contexts/AuthenticationContext";
 
 
-function LoginPage(){
+function LoginPage(props: any) {
+
+    const {user, loginUser} = useAuthContext();
+    const userService = React.useMemo(() => new UserService(null), [])
+
+
+    React.useEffect(() => {
+        if (user?.token) {
+            props.history.push("/dashboard");
+        }
+    }, [user]);
+
+    const [alertState, setAlertState] = React.useState({
+        visible: false,
+        text: "",
+        error: false,
+    });
+
+    const handleLogin = async (values: { email: any; password: any; showConfirmForm?: boolean; token?: string; active?: boolean; }, {
+        setValues,
+        setSubmitting
+    }: { setValues: (values: any, shouldValidate?: boolean | undefined) => void; setSubmitting: (isSubmitting: boolean) => void; }) => {
+
+        try {
+            const response: any = await loginUser({
+                username: values.email,
+                password: values.password,
+            });
+            if (response.internalError) {
+                setAlertState({
+                    ...alertState,
+                    visible: true,
+                    text: response.message,
+                    error: true,
+                    withActions: false,
+                });
+            }
+        } catch (error) {
+            console.log(error);
+            setAlertState({
+                ...alertState,
+                visible: true,
+                text: "Something was wrong try again later",
+                error: true,
+                withActions: false,
+            });
+        }
+    };
+
+
     return (
         <Formik
             initialValues={{
@@ -14,7 +65,7 @@ function LoginPage(){
             }}
             validate={values => {
                 // same as above, but feel free to move this into a class method now.
-                let errors = {};
+                let errors: any = {};
                 if (!values.email) {
                     errors.email = "Required";
                 } else if (
@@ -26,9 +77,10 @@ function LoginPage(){
             }}
             onSubmit={(
                 values,
-                { setSubmitting, setErrors /* setValues and other goodies */ }
+                {setSubmitting, setValues /* setValues and other goodies */}
             ) => {
-                alert("Done!");
+                handleLogin(values,
+                    {setValues, setSubmitting}).then(() => setSubmitting(false))
             }}
             render={({
                          values,
@@ -39,7 +91,8 @@ function LoginPage(){
                          handleSubmit,
                          isSubmitting,
                      }) => (
-                <TablerLoginPage
+                <LoginCard
+                    alertState={alertState}
                     onSubmit={handleSubmit}
                     onChange={handleChange}
                     onBlur={handleBlur}

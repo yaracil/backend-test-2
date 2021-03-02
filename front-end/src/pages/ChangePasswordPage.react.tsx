@@ -5,7 +5,7 @@ import {StandaloneFormPage, FormCard, FormTextInput, Alert, Button} from "tabler
 import {useFormik} from "formik";
 import {useLocation} from "react-router-dom";
 import UserService from "../services/user.service";
-import CardWrapperFormET from '../components/CardWrapperFormET'
+import CardWrapperForm from '../components/CardWrapperForm'
 import {AxiosResponse} from "axios";
 import {DEFAULT_REQUEST_ERROR} from "../util/Constants";
 
@@ -128,7 +128,7 @@ function ChangePasswordPage(): any {
     return (
         <div id="change-password-page" className="mt-7">
             <StandaloneFormPage imageURL={"./assets/images/logo_standalone.png"}>
-                <CardWrapperFormET
+                <CardWrapperForm
                     buttonText={defaultStrings.buttonText}
                     title={defaultStrings.title}
                     onSubmit={formik.handleSubmit}
@@ -168,7 +168,7 @@ function ChangePasswordPage(): any {
                         value={formik.values && formik.values.confirmedPassword}
                         error={formik.errors && formik.touched?.confirmedPassword && formik.errors.confirmedPassword}
                     />
-                </CardWrapperFormET>
+                </CardWrapperForm>
             </StandaloneFormPage>
         </div>
     );

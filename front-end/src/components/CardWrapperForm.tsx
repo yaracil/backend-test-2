@@ -15,7 +15,7 @@ type Props = {
     showSubmitButton?: boolean | string,
 };
 
-function CardWrapperFormET({
+function CardWrapperForm({
                                children,
                                action,
                                method,
@@ -58,4 +58,4 @@ function CardWrapperFormET({
     );
 }
 
-export default CardWrapperFormET;
+export default CardWrapperForm;

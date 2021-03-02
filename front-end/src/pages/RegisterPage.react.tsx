@@ -1,9 +1,44 @@
 import * as React from "react";
 import {Formik} from 'formik';
-import {RegisterPage as TablerRegisterPage} from "tabler-react";
+import {Alert, RegisterPage as TablerRegisterPage} from "tabler-react";
+import CardWrapperForm from "../components/CardWrapperForm";
+import {DEFAULT_REQUEST_ERROR} from "../util/Constants";
+import UserService from "../services/user.service";
+import {AxiosResponse} from "axios";
+import RegisterCard from "../components/RegisterCard";
 
 
 function RegisterPage() {
+    const [alertState, setAlertState] = React.useState({visible: false, text: "", error: false});
+    const userService = React.useMemo(() => new UserService(""), []);
+
+    const handleRegister = async (values: any) => {
+        const formAccount = {
+            name: values.name,
+            email: values.email,
+            password: values.password,
+        }
+        console.log("sending " + JSON.stringify(formAccount));
+        let errorMessage = DEFAULT_REQUEST_ERROR;
+        let send = false;
+        try {
+            const {data: response}: AxiosResponse = await userService.create(formAccount);
+            if (response.success) {
+                setAlertState({visible: true, text: "User Registered. Go sign in to begin.", error: false})
+                send = true;
+                return;
+            }
+            if (response?.internalError) {
+                errorMessage = response.message;
+            }
+        } catch (error) {
+            console.info("Error #RegisterPage " + error);
+        } finally {
+            if (!send) {
+                setAlertState({visible: true, text: errorMessage, error: true});
+            }
+        }
+    };
     return (
         <Formik
             initialValues={{
@@ -36,9 +71,11 @@ function RegisterPage() {
             onSubmit={(
                 values,
                 {setSubmitting, setErrors /* setValues and other goodies */}
-            ) => {
-                alert("Done!");
-            }}
+            ) =>
+                handleRegister(values).then(() => {
+                    setSubmitting(false);
+                })
+            }
             render={({
                          values,
                          errors,
@@ -48,14 +85,17 @@ function RegisterPage() {
                          handleSubmit,
                          isSubmitting,
                      }) => (
-                <TablerRegisterPage
-                    onSubmit={handleSubmit}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    values={values}
-                    errors={errors}
-                    touched={touched}
-                />)}
+                <div>
+
+                    <RegisterCard
+                        alertState={alertState}
+                        onSubmit={handleSubmit}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        values={values}
+                        errors={errors}
+                        touched={touched}
+                    /></div>)}
         />
     );
 }

@@ -57,7 +57,7 @@ public class UserController extends ResponseEntityExceptionHandler {
         return HttpStatus.OK;
     }
 
-    @PostMapping
+    @PostMapping("/register")
     @ResponseBody
     @CrossOrigin
     public ResponseEntity<Object> createNewUser(@RequestBody UserDto userDto) {
@@ -77,7 +77,6 @@ public class UserController extends ResponseEntityExceptionHandler {
             throw new MyAppException("msg.user.notexists");
         }
         userFromDb.setEmail(userRequest.getEmail());
-        //userFromDb.setTagLine(userRequest.getTagLine());
         return userRepository.save(userFromDb);
     }
 
@@ -85,16 +84,6 @@ public class UserController extends ResponseEntityExceptionHandler {
     public User findFirstByUsername(@RequestParam String username) {
         return userRepository.findFirstByEmailIgnoreCase(username);
     }
-
-    //    @RequestMapping(path = "/forgot-password/confirm", method = RequestMethod.POST)
-//    @CrossOrigin
-//    public ResponseEntity<Object> forgotPasswordConfirm(@RequestBody ChangePasswordDto request) {
-//        LOG.info("Getting #forgot-password-confirm email " + request.getEmail());
-//        Map<String, Object> response = new HashMap<>();
-//        response.put("confirmed", usersService.forgotPasswordConfirm(request.getToken(), request.getEmail(), request.getNewPassword()));
-//        response.put("success", "true");
-//        return ResponseEntity.ok(response);
-//    }
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
@@ -109,8 +98,8 @@ public class UserController extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(MyAppException.class)
-    public ResponseEntity<Object> handleEffortTrackingException(MyAppException ex,
-                                                                WebRequest request) {
+    public ResponseEntity<Object> handleMyAppException(MyAppException ex,
+                                                       WebRequest request) {
         Map<String, Object> response = new HashMap<>();
 
         response.put("internalError", "true");

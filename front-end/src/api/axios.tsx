@@ -2,7 +2,7 @@ import axios from "axios"; import {server_address} from "../util/Constants";
 
 const ApiProtectedWS = (token: string, baseUrl: string) => {
     const args = {
-        baseURL: server_address+"/" + baseUrl,
+        baseURL: server_address+"/api/" + baseUrl,
         headers: {
             "Content-type": "application/json",
             "Access-Control-Allow-Origin": "*",
@@ -14,7 +14,7 @@ const ApiProtectedWS = (token: string, baseUrl: string) => {
 };
 const ApiOpenWS = (baseUrl: string) => {
     const args = {
-        baseURL: server_address+"/" + baseUrl,
+        baseURL: server_address+"/api/" + baseUrl,
         crossdomain: true,
         headers: {
             "Content-type": "application/json",
