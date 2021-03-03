@@ -7,10 +7,10 @@
 1. Open build.gradle in IntelliJ.
 2. Install Gradle dependencies.
 3. Turn on Docker Application.
-4. Run docker-compose up to turn on server.
-5. cd front-end/
-6. Run yarn to install JavaScript dependencies.
-7. Run yarn start to run front-end app.
+4. Run "docker-compose -f docker-compose.yml up" to turn on a server.
+5. Run "cd front-end/"
+6. Run "yarn" to install JavaScript dependencies.
+7. Run "yarn start" to run front-end app.
 
 ### Authentication
 #### Admin User (Can manage orders and items)
